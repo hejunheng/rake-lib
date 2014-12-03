@@ -31,7 +31,7 @@ function skipDebugFiles(file) {
 }
 
 gulp.task('clean', function() {
-    return gulp.src(paths.dist.path).pipe(rimraf())
+    return gulp.src(paths.dist.gallery).pipe(rimraf())
 })
 
 gulp.task('build-gallery', ['clean'], function() {
