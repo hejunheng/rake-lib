@@ -12,9 +12,13 @@ var cloneSink = clone.sink()
 var path = require('path')
 
 var paths = {
-    dist: './dist',
-    release: './release',
-    source: ['./gallery/**/*.js'],
+    dist: {
+        path: './dist',
+        gallery: './dist/gallery'
+    },
+    source: {
+        gallery: ['./gallery/**/*.js']
+    },
     fake: './fake/gallery'
 }
 
@@ -27,11 +31,11 @@ function skipDebugFiles(file) {
 }
 
 gulp.task('clean', function() {
-    return gulp.src(paths.dist).pipe(rimraf())
+    return gulp.src(paths.dist.path).pipe(rimraf())
 })
 
-gulp.task('build', ['clean'], function() {
-    return gulp.src(paths.source)
+gulp.task('build-gallery', ['clean'], function() {
+    return gulp.src(paths.source.gallery)
         .pipe(gulpif(skipSeaFiles, transport()))
         .pipe(cloneSink)
         .pipe(rename(function(path) {
@@ -39,12 +43,11 @@ gulp.task('build', ['clean'], function() {
         }))
         .pipe(cloneSink.tap())
         .pipe(gulpif(skipDebugFiles, uglify()))
-        .pipe(gulp.dest(paths.dist))
-        .pipe(gulp.dest(paths.fake))
+        .pipe(gulp.dest(paths.dist.gallery))
 })
 
 gulp.task('watch', function() {
-    gulp.watch(paths.source, ['build'])
+    gulp.watch(paths.source.gallery, ['build-gallery'])
 })
 
-gulp.task('default', ['build', 'watch'])
+gulp.task('default', ['clean', 'build-gallery', 'watch'])
