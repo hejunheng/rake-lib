@@ -5,6 +5,7 @@
     <title></title>
     <script src="dist/gallery/seajs/2.3.0/sea.js"></script>
     <script src="dist/gallery/zepto/1.1.4/zepto.js"></script>
+    <script src="dist/gallery/zepto/1.1.4/zepto.js"></script>
     <script>
         seajs.config({
             base: './dist/',
@@ -12,7 +13,7 @@
                 'zepto': 'gallery/zepto/1.1.4/zepto'
             },
             map: [
-//                ['.js', '.debug.js']
+                ['.js', '.debug.js']
             ]
         })
     </script>
@@ -27,8 +28,9 @@
             'gallery/iscroll/5.1.3/iscroll-lite',
             'gallery/swipe/2.0.0/swipe',
             'gallery/underscore/1.7.0/underscore',
-            'gallery/juicer/0.6.5/juicer'
-        ], function($, FastClick, Hammer, iScroll, iScrollLite, Swipe, _, Juicer) {
+            'gallery/juicer/0.6.5/juicer',
+            'gallery/image-loader/0.0.1/image-loader'
+        ], function($, FastClick, Hammer, iScroll, iScrollLite, Swipe, _, Juicer, ImageLoader) {
             _.forEach(document.querySelectorAll('script'), function(script) {
                 console.log(script)
             })
@@ -54,6 +56,10 @@
                 console.log('done', arguments)
             }).fail(function(result) {
                 console.log('fail', result)
+            })
+
+            var imageLoader = new ImageLoader({
+                threads: 5
             })
         })
     </script>

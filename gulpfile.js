@@ -1,4 +1,5 @@
 var gulp = require('gulp')
+var watch = require('gulp-watch')
 var concat = require('gulp-concat')
 var uglify = require('gulp-uglify')
 var transport = require('gulp-cmd-transport')
@@ -7,9 +8,6 @@ var rimraf = require('gulp-rimraf')
 var gulpif = require('gulp-if')
 var rename = require('gulp-rename')
 var clone = require('gulp-clone')
-var cloneSink = clone.sink()
-
-var path = require('path')
 
 var paths = {
     dist: {
@@ -30,17 +28,27 @@ function skipDebugFiles(file) {
     return !~file.path.indexOf('.debug')
 }
 
-gulp.task('clean', function() {
+gulp.task('clean', ['clean-gallery'])
+
+// clean gallery dir
+gulp.task('clean-gallery', function() {
     return gulp.src(paths.dist.gallery).pipe(rimraf())
 })
 
-gulp.task('build-gallery', ['clean'], function() {
+// build gallery
+gulp.task('build-gallery', ['clean-gallery'], function() {
+    var cloneSink = clone.sink()
+
     return gulp.src(paths.source.gallery)
+        // cmd transport
         .pipe(gulpif(skipSeaFiles, transport()))
+        // duplicate source files
         .pipe(cloneSink)
+        // rename debug files
         .pipe(rename(function(path) {
             path.basename += '.debug'
         }))
+        //
         .pipe(cloneSink.tap())
         .pipe(gulpif(skipDebugFiles, uglify()))
         .pipe(gulp.dest(paths.dist.gallery))
